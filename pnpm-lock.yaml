@@ -7,6 +7,15 @@ settings:
 importers:
 
   .:
+    devDependencies:
+      prettier:
+        specifier: ^3.7.4
+        version: 3.7.4
+      supabase:
+        specifier: ^2.70.5
+        version: 2.70.5
+
+  apps/web:
     dependencies:
       '@prisma/client':
         specifier: ^7.2.0
@@ -14,6 +23,9 @@ importers:
       '@supabase/ssr':
         specifier: ^0.8.0
         version: 0.8.0(@supabase/supabase-js@2.89.0)
+      '@voistant/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       next:
         specifier: 16.1.1
         version: 16.1.1(@babel/core@7.28.5)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -51,6 +63,15 @@ importers:
       tailwindcss:
         specifier: ^4
         version: 4.1.18
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
+  packages/db:
+    devDependencies:
+      supabase:
+        specifier: ^2.70.5
+        version: 2.70.5
       typescript:
         specifier: ^5
         version: 5.9.3
@@ -1945,6 +1966,11 @@ packages:
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
+
+  prettier@3.7.4:
+    resolution: {integrity: sha512-v6UNi1+3hSlVvv8fSaoUbggEM5VErKmmpGA7Pl3HF8V6uKY7rvClBOJlH6yNwQtfTueNkGVpOv/mtWL9L4bgRA==}
+    engines: {node: '>=14'}
+    hasBin: true
 
   prisma@7.2.0:
     resolution: {integrity: sha512-jSdHWgWOgFF24+nRyyNRVBIgGDQEsMEF8KPHvhBBg3jWyR9fUAK0Nq9ThUmiGlNgq2FA7vSk/ZoCvefod+a8qg==}
@@ -4394,6 +4420,8 @@ snapshots:
   postgres@3.4.7: {}
 
   prelude-ls@1.2.1: {}
+
+  prettier@3.7.4: {}
 
   prisma@7.2.0(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3):
     dependencies:
