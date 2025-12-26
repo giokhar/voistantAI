@@ -14,21 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
-      test: {
+      calls: {
         Row: {
+          call_analysis: Json | null
           created_at: string
-          id: number
-          name: string | null
+          customer_id: string
+          duration_seconds: number
+          ended_at: string
+          external_call_id: string | null
+          id: string
+          started_at: string
+          transcript: string | null
         }
         Insert: {
+          call_analysis?: Json | null
           created_at?: string
-          id?: number
-          name?: string | null
+          customer_id: string
+          duration_seconds: number
+          ended_at: string
+          external_call_id?: string | null
+          id?: string
+          started_at: string
+          transcript?: string | null
         }
         Update: {
+          call_analysis?: Json | null
           created_at?: string
-          id?: number
-          name?: string | null
+          customer_id?: string
+          duration_seconds?: number
+          ended_at?: string
+          external_call_id?: string | null
+          id?: string
+          started_at?: string
+          transcript?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calls_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customers: {
+        Row: {
+          business_name: string
+          contact_email: string
+          created_at: string
+          id: string
+          is_active: boolean
+          retell_agent_id: string | null
+        }
+        Insert: {
+          business_name: string
+          contact_email: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          retell_agent_id?: string | null
+        }
+        Update: {
+          business_name?: string
+          contact_email?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          retell_agent_id?: string | null
         }
         Relationships: []
       }
