@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Retell } from "retell-sdk";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { sendSMS } from "@packages/sms";
 
 export async function POST(req: Request) {
   const rawBody = await req.text();
@@ -24,7 +25,7 @@ export async function POST(req: Request) {
   // Find customer by Retell agent ID
   const { data: customer, error: custErr } = await adminClient
     .from("customers")
-    .select("id")
+    .select("id, contact_phone_number, business_name")
     .eq("retell_agent_id", call.agent_id)
     .single();
 
@@ -35,6 +36,7 @@ export async function POST(req: Request) {
 
   const startMs = Number(call.start_timestamp);
   const endMs = Number(call.end_timestamp);
+  const durationSeconds = Math.max(0, Math.floor((endMs - startMs) / 1000));
 
   const { error: insertErr } = await adminClient.from("calls").upsert(
     {
@@ -42,7 +44,7 @@ export async function POST(req: Request) {
       external_call_id: call.call_id,
       started_at: new Date(startMs).toISOString(),
       ended_at: new Date(endMs).toISOString(),
-      duration_seconds: Math.max(0, Math.floor((endMs - startMs) / 1000)),
+      duration_seconds: durationSeconds,
       transcript: call.transcript ?? null,
       call_analysis: call.call_analysis ?? null,
     },
@@ -51,6 +53,18 @@ export async function POST(req: Request) {
 
   if (insertErr) {
     console.error("Failed to insert call:", insertErr);
+  }
+
+  // Send SMS notification if customer has a phone number
+  if (customer.contact_phone_number) {
+    const summary = call.call_analysis?.call_summary ?? "No summary available";
+    const durationMin = Math.ceil(durationSeconds / 60);
+
+    try {
+      await sendSMS(customer.contact_phone_number, `New call completed (${durationMin} min). Summary: ${summary}`);
+    } catch (smsErr) {
+      console.error("Failed to send SMS:", smsErr);
+    }
   }
 
   return new NextResponse(null, { status: 204 });

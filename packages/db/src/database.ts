@@ -62,6 +62,7 @@ export type Database = {
         Row: {
           business_name: string
           contact_email: string
+          contact_phone_number: string | null
           created_at: string
           id: string
           is_active: boolean
@@ -70,6 +71,7 @@ export type Database = {
         Insert: {
           business_name: string
           contact_email: string
+          contact_phone_number?: string | null
           created_at?: string
           id?: string
           is_active?: boolean
@@ -78,6 +80,7 @@ export type Database = {
         Update: {
           business_name?: string
           contact_email?: string
+          contact_phone_number?: string | null
           created_at?: string
           id?: string
           is_active?: boolean
