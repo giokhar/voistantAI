@@ -56,15 +56,13 @@ export async function POST(req: Request) {
   }
 
   // Send SMS notification if customer has a phone number
-  if (customer.contact_phone_number) {
-    const summary = call.call_analysis?.call_summary ?? "No summary available";
-    const durationMin = Math.ceil(durationSeconds / 60);
+  const summary = call.call_analysis?.call_summary ?? "No summary available";
+  const durationMin = Math.ceil(durationSeconds / 60);
 
-    try {
-      await sendSMS(customer.contact_phone_number, `New call completed (${durationMin} min). Summary: ${summary}`);
-    } catch (smsErr) {
-      console.error("Failed to send SMS:", smsErr);
-    }
+  try {
+    await sendSMS(customer.contact_phone_number, `New call completed (${durationMin} min). Summary: ${summary}`);
+  } catch (smsErr) {
+    console.error("Failed to send SMS:", smsErr);
   }
 
   return new NextResponse(null, { status: 204 });
