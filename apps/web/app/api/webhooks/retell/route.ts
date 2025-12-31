@@ -59,6 +59,10 @@ export async function POST(req: Request) {
   const summary = call.call_analysis?.call_summary ?? "No summary available";
   const durationMin = Math.ceil(durationSeconds / 60);
 
+  if (process.env.NODE_ENV !== "development" && !customer.contact_phone_number) {
+    console.error("Customer has no phone number in the db");
+  }
+
   try {
     await sendSMS(customer.contact_phone_number, `New call completed (${durationMin} min). Summary: ${summary}`);
   } catch (smsErr) {
