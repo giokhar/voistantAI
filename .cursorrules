@@ -45,6 +45,15 @@ SELECT add_admin_policies('invoices');
 - `/apps/web` - Next.js 16 web application
 - `/packages/db` - Supabase database types (generated)
 - `/packages/sms` - Twilio SMS notifications
+- `/packages/ui` - Shared UI components (shadcn/ui)
+
+### shadcn/ui Setup
+
+- Components installed to: `packages/ui/src/components/`
+- Import as: `import { Button } from "@packages/ui/components/button"`
+- Add components: `cd apps/web && pnpx shadcn@latest add [component]`
+- Utils helper: `@packages/ui/lib/utils` (cn function)
+- Theme CSS: `packages/ui/src/styles/globals.css`
 
 ## Key Patterns
 

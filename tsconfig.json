@@ -1,0 +1,17 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./apps/web"
+    },
+    {
+      "path": "./packages/db"
+    },
+    {
+      "path": "./packages/sms"
+    },
+    {
+      "path": "./packages/ui"
+    }
+  ]
+}
