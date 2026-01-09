@@ -1,0 +1,54 @@
+# Cursor AI Rules for VoistantAI Project
+
+## Meta Rule: Maintaining These Rules
+
+**IMPORTANT:** When making major architectural changes (new auth patterns, database conventions, folder structure changes, utility patterns, etc.), ALWAYS update this `.cursorrules` file to reflect the new patterns. This ensures consistency across all future Cursor sessions.
+
+## Supabase Database Rules
+
+### When Creating New Tables
+
+When using Supabase MCP to create new tables, ALWAYS follow this protocol:
+
+1. Create the table with appropriate columns
+2. Enable RLS: `ALTER TABLE table_name ENABLE ROW LEVEL SECURITY;`
+3. Apply admin policies: `SELECT add_admin_policies('table_name');`
+
+**Example:**
+```sql
+CREATE TABLE public.invoices (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  customer_id uuid REFERENCES customers(id),
+  amount numeric(10,2),
+  created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.invoices ENABLE ROW LEVEL SECURITY;
+SELECT add_admin_policies('invoices');
+```
+
+### Admin Policy Helper
+
+- **Function:** `add_admin_policies(table_name, schema_name DEFAULT 'public')`
+- **Purpose:** Grants full access (SELECT, INSERT, UPDATE, DELETE) to users with `app_metadata.role === 'admin'`
+- **Already applied to:** `customers`, `calls`
+
+### Authentication Pattern
+
+- Admin role stored in `auth.users.raw_app_meta_data.role = 'admin'`
+- Regular users have no role or `role = 'user'`
+- Check admin with `is_admin()` helper function in app code
+- RLS policies use `(auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'`
+
+## Project Structure
+
+- `/apps/web` - Next.js 16 web application
+- `/packages/db` - Supabase database types (generated)
+- `/packages/sms` - Twilio SMS notifications
+
+## Key Patterns
+
+- Use `createClient()` from `@/utils/supabase/server` for authenticated requests (respects RLS)
+- Use `createAdminClient()` from `@/utils/supabase/admin` for webhooks/background jobs (bypasses RLS with service role)
+- All protected routes under `app/(protected)/` automatically require authentication
+- Admin views conditionally rendered based on `isAdmin()` utility

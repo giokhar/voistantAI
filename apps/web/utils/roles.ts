@@ -1,0 +1,10 @@
+"use server";
+import { createClient } from "@/utils/supabase/server";
+
+export async function isAdmin(): Promise<boolean> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return user?.app_metadata?.role === "admin";
+}
