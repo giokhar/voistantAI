@@ -44,14 +44,22 @@ export interface EventFormData {
   showAs: ShowAsStatus;
 }
 
-// Working hours configuration
-export const WORKING_HOURS: {
+// Working hours configuration type
+export interface WorkingHoursConfig {
   start: number;
   end: number;
   workingDays: readonly number[];
-} = {
+  timezone: string;
+}
+
+// Default working hours (used as fallback)
+export const DEFAULT_WORKING_HOURS: WorkingHoursConfig = {
   start: 9, // 9 AM
   end: 17, // 5 PM
   // Days where appointments can be booked (0 = Sunday, 6 = Saturday)
   workingDays: [1, 2, 3, 4, 5], // Monday through Friday
+  timezone: "America/New_York",
 };
+
+// Legacy constant for backwards compatibility
+export const WORKING_HOURS = DEFAULT_WORKING_HOURS;

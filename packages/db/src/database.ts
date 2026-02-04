@@ -88,12 +88,91 @@ export type Database = {
         }
         Relationships: []
       }
+      user_integrations: {
+        Row: {
+          access_token: string | null
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          provider: string
+          provider_email: string | null
+          provider_user_id: string | null
+          refresh_token: string | null
+          scopes: string[] | null
+          token_expires_at: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          access_token?: string | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          provider: string
+          provider_email?: string | null
+          provider_user_id?: string | null
+          refresh_token?: string | null
+          scopes?: string[] | null
+          token_expires_at?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          access_token?: string | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          provider?: string
+          provider_email?: string | null
+          provider_user_id?: string | null
+          refresh_token?: string | null
+          scopes?: string[] | null
+          token_expires_at?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_preferences: {
+        Row: {
+          created_at: string | null
+          id: string
+          timezone: string
+          updated_at: string | null
+          user_id: string
+          work_day_end: string
+          work_day_start: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          timezone?: string
+          updated_at?: string | null
+          user_id: string
+          work_day_end?: string
+          work_day_start?: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          timezone?: string
+          updated_at?: string | null
+          user_id?: string
+          work_day_end?: string
+          work_day_start?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      add_admin_policies: {
+        Args: { schema_name?: string; table_name: string }
+        Returns: undefined
+      }
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never

@@ -1,7 +1,7 @@
 import { dateFnsLocalizer } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay, setHours, setMinutes, addDays } from "date-fns";
 import { enUS } from "date-fns/locale";
-import { WORKING_HOURS, type CalendarEvent, type EventFormData, type ShowAsStatus } from "./types";
+import { DEFAULT_WORKING_HOURS, type CalendarEvent, type EventFormData, type ShowAsStatus, type WorkingHoursConfig } from "./types";
 
 // Localizer configuration
 const locales = {
@@ -20,10 +20,10 @@ export const localizer = dateFnsLocalizer({
 export const getUserTimezone = () => Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 // Generate time options for select dropdowns
-export const generateTimeOptions = (workingHoursOnly: boolean = true) => {
+export const generateTimeOptions = (workingHoursOnly: boolean = true, workingHours: WorkingHoursConfig = DEFAULT_WORKING_HOURS) => {
   const options: { value: string; label: string }[] = [];
-  const startHour = workingHoursOnly ? WORKING_HOURS.start : 0;
-  const endHour = workingHoursOnly ? WORKING_HOURS.end : 24;
+  const startHour = workingHoursOnly ? workingHours.start : 0;
+  const endHour = workingHoursOnly ? workingHours.end : 24;
   
   for (let hour = startHour; hour <= endHour; hour++) {
     for (let minute = 0; minute < 60; minute += 30) {
@@ -42,35 +42,41 @@ export const generateTimeOptions = (workingHoursOnly: boolean = true) => {
 export const allTimeOptions = generateTimeOptions(false);
 
 // Check if a slot is bookable (within working hours and on a working day)
-export const isBookableSlot = (date: Date): boolean => {
+export const isBookableSlot = (date: Date, workingHours: WorkingHoursConfig = DEFAULT_WORKING_HOURS): boolean => {
   const hour = date.getHours();
   const dayOfWeek = date.getDay();
   return (
-    WORKING_HOURS.workingDays.includes(dayOfWeek) &&
-    hour >= WORKING_HOURS.start &&
-    hour < WORKING_HOURS.end
+    workingHours.workingDays.includes(dayOfWeek) &&
+    hour >= workingHours.start &&
+    hour < workingHours.end
   );
 };
 
 // Check if a time slot is within working hours
-export const isWorkingHour = (date: Date): boolean => {
+export const isWorkingHour = (date: Date, workingHours: WorkingHoursConfig = DEFAULT_WORKING_HOURS): boolean => {
   const hour = date.getHours();
   const dayOfWeek = date.getDay();
   return (
-    WORKING_HOURS.workingDays.includes(dayOfWeek) &&
-    hour >= WORKING_HOURS.start &&
-    hour < WORKING_HOURS.end
+    workingHours.workingDays.includes(dayOfWeek) &&
+    hour >= workingHours.start &&
+    hour < workingHours.end
   );
 };
 
 // Check if a day is a working day
-export const isWorkingDay = (date: Date): boolean => {
-  return WORKING_HOURS.workingDays.includes(date.getDay());
+export const isWorkingDay = (date: Date, workingHours: WorkingHoursConfig = DEFAULT_WORKING_HOURS): boolean => {
+  return workingHours.workingDays.includes(date.getDay());
+};
+
+// Parse time string (HH:MM:SS or HH:MM) to hour number
+export const parseTimeToHour = (time: string): number => {
+  const [hours] = time.split(":").map(Number);
+  return hours;
 };
 
 // Create sample events for demonstration
-export const createSampleEvents = (): CalendarEvent[] => {
-  const userTz = getUserTimezone();
+export const createSampleEvents = (timezone?: string): CalendarEvent[] => {
+  const userTz = timezone || getUserTimezone();
   const now = new Date();
   
   return [
@@ -105,6 +111,36 @@ export const createSampleEvents = (): CalendarEvent[] => {
       showAs: "tentative",
     },
   ];
+};
+
+// Format timezone for display (e.g., "America/New_York" -> "Eastern Time")
+export const formatTimezoneDisplay = (timezone: string): string => {
+  try {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: timezone,
+      timeZoneName: 'long',
+    });
+    const parts = formatter.formatToParts(new Date());
+    const tzName = parts.find(part => part.type === 'timeZoneName');
+    return tzName?.value || timezone;
+  } catch {
+    return timezone;
+  }
+};
+
+// Get short timezone abbreviation (e.g., "EST", "PST")
+export const getTimezoneAbbr = (timezone: string): string => {
+  try {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: timezone,
+      timeZoneName: 'short',
+    });
+    const parts = formatter.formatToParts(new Date());
+    const tzName = parts.find(part => part.type === 'timeZoneName');
+    return tzName?.value || timezone;
+  } catch {
+    return timezone;
+  }
 };
 
 // Get default form state

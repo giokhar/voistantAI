@@ -4,7 +4,7 @@ import { Views, type View } from "react-big-calendar";
 import { format } from "date-fns";
 import { Button } from "@packages/ui/components/button";
 import { CardTitle } from "@packages/ui/components/card";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Globe } from "lucide-react";
 
 interface CalendarToolbarProps {
   date: Date;
@@ -13,6 +13,7 @@ interface CalendarToolbarProps {
   onNavigateBack: () => void;
   onNavigateForward: () => void;
   onGoToToday: () => void;
+  timezone?: string;
 }
 
 export function CalendarToolbar({
@@ -22,12 +23,21 @@ export function CalendarToolbar({
   onNavigateBack,
   onNavigateForward,
   onGoToToday,
+  timezone,
 }: CalendarToolbarProps) {
   return (
     <div className="flex items-center justify-between">
-      <CardTitle className="text-xl">
-        {format(date, view === Views.DAY ? "MMMM d, yyyy" : "MMMM yyyy")}
-      </CardTitle>
+      <div className="flex items-center gap-3">
+        <CardTitle className="text-xl">
+          {format(date, view === Views.DAY ? "MMMM d, yyyy" : "MMMM yyyy")}
+        </CardTitle>
+        {timezone && (
+          <span className="flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-md">
+            <Globe className="h-3 w-3" />
+            {timezone}
+          </span>
+        )}
+      </div>
       <div className="flex items-center gap-2">
         {/* Navigation controls */}
         <div className="flex items-center gap-1">
