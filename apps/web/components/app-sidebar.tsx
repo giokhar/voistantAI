@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Settings, LogOut, User, ChevronUp } from "lucide-react";
+import { LayoutDashboard, Settings, LogOut, User, ChevronUp, CalendarDays } from "lucide-react";
 
 import {
   Sidebar,
@@ -32,6 +32,11 @@ const navItems = [
     title: "Dashboard",
     url: "/dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Calendar",
+    url: "/calendar",
+    icon: CalendarDays,
   },
   {
     title: "Settings",
